@@ -1,0 +1,12 @@
+region='REGION_NAME'
+username='admin'
+password='SERVICEPW'
+project_name='admin'
+project_domain_id='default' # IAMv3
+user_domain_id='default' # IAMv3
+auth_url='http://iamv3.savitestbed.ca:5000/v3'
+janus_address='CTRL_IP'
+janus_port=8091
+rabbit_user = 'guest'
+rabbit_password = 'RABBITPW'
+rabbit_host = 'CTRL_IP'
