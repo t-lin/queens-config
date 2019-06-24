@@ -118,6 +118,18 @@ if [[ "${NODETYPE}" == "controller" ]]; then
     echo "Re-writing IPs..."
     sudo sed -i "s/CTRL_IP/${CTRL_IP}/g" /etc/neutron/neutron.conf
     sudo sed -i "s/CTRL_IP/${CTRL_IP}/g" /etc/nova/nova.conf
+
+    echo
+    echo "Replacing stack-screenrc..."
+    mv ~/devstack/stack-screenrc ~/devstack/stack-screenrc.newton
+    cp ${SCRIPT_DIR}/controller/stack-screenrc ~/devstack/
+    ROUTERID=`mysql -sN -e "USE neutron; SELECT id FROM routers;"`
+    if [[ `echo ${ROUTERID} | wc -l` -ne 1 || -z ${ROUTERID} ]]; then
+        echo "ERROR: Something went wrong trying to find the Neutron router's ID..."
+        echo "       Must manually figure out which one should be QR and edit stack-screenrc's arp_handler line"
+        exit 0
+    fi
+    sed -i "s/QR_NS/${ROUTERID}/g" ~/devstack/stack-screenrc
 elif [[ "${NODETYPE}" == "agent" ]]; then
     sudo cp ${SCRIPT_DIR}/agent/nova.conf /etc/nova/
     sudo cp ${SCRIPT_DIR}/agent/neutron.conf /etc/neutron/
@@ -163,7 +175,6 @@ sudo sed -i "s/RABBITPW/${RABBITPW}/g" /opt/stack/janus-ovsdb/jovs_config.py
 echo
 echo "WARNING: SOME PASSWORDS (Rabbit, MySQL) ARE STORED IN NOVA_API'S 'cell_mappings' TABLE, MAY NEED TO BE MANUALLY CHANGED"
 echo
-echo "REMINDER: Nova now needs new Placement API service to be started: nova-placement-api --port 8778"
-echo "          Must have also pre-created the Placement API endpoint in Keystone catalog"
+echo "REMINDER: Must have also pre-created the Placement API endpoint in Keystone catalog"
 echo
 echo "Done!"
