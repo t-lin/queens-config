@@ -135,12 +135,17 @@ elif [[ "${NODETYPE}" == "agent" ]]; then
     sudo cp ${SCRIPT_DIR}/agent/neutron.conf /etc/neutron/
     sudo cp ${SCRIPT_DIR}/agent/ml2_conf.ini /etc/neutron/plugins/ml2/
 
+    # Get public IP address
+    # Ideally this should be the FQDN of the controller
+    CTRL_PUB_IP=`curl -s ipconfig.io`
+
     read -p "What is this agent's internal management IP? => " AGENT_IP
     echo
 
     echo "Re-writing IPs..."
     sudo sed -i "s/CTRL_IP/${CTRL_IP}/g" /etc/neutron/neutron.conf
     sudo sed -i "s/CTRL_IP/${CTRL_IP}/g" /etc/nova/nova.conf
+    sudo sed -i "s/CTRL_PUB_IP/${CTRL_PUB_IP}/g" /etc/nova/nova.conf
     sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/nova/nova.conf
     sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
 else
