@@ -1,0 +1,21 @@
+sessionname stack
+hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}%H/%l%{g})'
+setenv PROMPT_COMMAND /bin/true
+screen -t shell bash
+screen -t q-agt bash
+stuff "/usr/local/bin/neutron-openvswitch-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini"
+logfile /opt/stack/logs/q-agt.log.2017-01-11-132654
+log on
+screen -t n-novnc bash
+stuff "/usr/local/bin/nova-novncproxy --config-file /etc/nova/nova.conf --web /opt/stack/noVNC"
+logfile /opt/stack/logs/n-novnc.log.2017-01-11-132654
+log on
+screen -t n-cpu bash
+stuff "/usr/local/bin/nova-compute --config-file /etc/nova/nova.conf"
+logfile /opt/stack/logs/n-cpu.log.2017-01-11-132654
+log on
+screen -t j-ovsdb bash
+stuff "sleep 60; cd /opt/stack/janus-ovsdb; ./ovsdb.py"
+logfile /opt/stack/logs/j-ovsdb.log.2017-01-11-132654
+log on
+
