@@ -133,6 +133,7 @@ if [[ "${NODETYPE}" == "controller" ]]; then
 elif [[ "${NODETYPE}" == "agent" ]]; then
     sudo cp ${SCRIPT_DIR}/agent/nova.conf /etc/nova/
     sudo cp ${SCRIPT_DIR}/agent/neutron.conf /etc/neutron/
+    sudo cp ${SCRIPT_DIR}/agent/ml2_conf.ini /etc/neutron/plugins/ml2/
 
     read -p "What is this agent's internal management IP? => " AGENT_IP
     echo
@@ -141,6 +142,7 @@ elif [[ "${NODETYPE}" == "agent" ]]; then
     sudo sed -i "s/CTRL_IP/${CTRL_IP}/g" /etc/neutron/neutron.conf
     sudo sed -i "s/CTRL_IP/${CTRL_IP}/g" /etc/nova/nova.conf
     sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/nova/nova.conf
+    sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
 else
     echo "Uh oh, shouldn't be here"
     exit 1
