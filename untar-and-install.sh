@@ -150,7 +150,20 @@ elif [[ "${NODETYPE}" == "agent" ]]; then
     sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
 
     if [[ ! -d ~/devstack ]]; then
+        echo "Copying over basic devstack to home directory..."
         cp -r ${SCRIPT_DIR}/simple-agent-devstack ~/devstack
+    fi
+
+    if [[ ! -d /opt/stack/ryu ]]; then
+        echo "Untar'ing Ryu to /opt/stack/..."
+        tar -xvf ${SCRIPT_DIR}/ryu.tar.gz -C /opt/stack/
+
+        if [[ ! -f /etc/ryu/ryu.conf ]]; then
+            echo "Creating ryu config file..."
+            sudo mkdir -p /etc/ryu && chown -R `whoami`:`whoami` /etc/ryu
+            cp -r ${SCRIPT_DIR}/agent/ryu.conf /etc/ryu/ryu.conf
+            sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/ryu/ryu.conf
+        fi
     fi
 else
     echo "Uh oh, shouldn't be here"
