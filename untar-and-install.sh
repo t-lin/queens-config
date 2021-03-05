@@ -148,6 +148,10 @@ elif [[ "${NODETYPE}" == "agent" ]]; then
     sudo sed -i "s/CTRL_PUB_IP/${CTRL_PUB_IP}/g" /etc/nova/nova.conf
     sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/nova/nova.conf
     sudo sed -i "s/AGENT_IP/${AGENT_IP}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
+
+    if [[ ! -d ~/devstack ]]; then
+        cp -r ${SCRIPT_DIR}/simple-agent-devstack ~/devstack
+    fi
 else
     echo "Uh oh, shouldn't be here"
     exit 1
